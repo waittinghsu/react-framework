@@ -1,0 +1,19 @@
+.footer {
+  position: fixed;
+  bottom: -50px; /* 隐藏在底部 */
+  left: 0;
+  width: 100%;
+  background: #001529; /* 适配 antd 的 dark 主题 */
+  color: #fff;
+  text-align: center;
+  padding: 1rem;
+  transition: bottom 0.3s;
+
+  &.footer-visible {
+    bottom: 0; /* 浮现到可见区域 */
+  }
+
+  .footer-content {
+    padding: 1rem;
+  }
+}
