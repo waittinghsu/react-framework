@@ -1,3 +1,30 @@
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
+
+// 自定义按钮样式，确保不被 antd 覆盖
+.custom-red-button {
+  @apply bg-red-500 text-white font-bold py-2 px-4 rounded;
+}
+
+.custom-red-button:hover {
+  @apply bg-red-700;
+}
+
+.ant-btn.custom-red-button {
+  /* 確保 TailwindCSS 样式应用在Ant Design组件上 */
+  @apply bg-red-500 text-white font-bold py-2 px-4 rounded !important;
+}
+
+.ant-btn.custom-red-button:hover {
+  @apply bg-red-700 !important;
+}
+
+.custom-green-button {
+  @apply bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded;
+}
+
+
+.default-page {
+
+}

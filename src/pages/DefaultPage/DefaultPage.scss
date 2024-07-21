@@ -1,0 +1,12 @@
+@keyframes blink {
+  0%, 100% {
+    //background-color: theme('colors.amber.200');
+  }
+  50% {
+    background-color: theme('colors.amber.600');
+  }
+}
+
+.animate-blink {
+  animation: blink 1s infinite;
+}

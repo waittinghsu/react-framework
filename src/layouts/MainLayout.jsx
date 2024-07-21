@@ -1,17 +1,18 @@
 import PropTypes from 'prop-types';
-import Header from './Header';
-import Footer from './Footer';
+import TransparentHeader from './components/TransparentHeader.jsx';
+import Footer from './components/Footer.jsx';
+import './styles/MainLayout.scss';
 
 const MainLayout = ({ children }) => (
-		<div>
-			<Header />
-			<main>{children}</main>
-			<Footer />
-		</div>
+  <div>
+    <TransparentHeader />
+    <main className="main-container">{children}</main>
+    <Footer />
+  </div>
 );
 
 MainLayout.propTypes = {
-	children: PropTypes.node.isRequired,
+  children: PropTypes.node,
 };
 
 export default MainLayout;
