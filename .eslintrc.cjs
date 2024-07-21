@@ -2,35 +2,34 @@ module.exports = {
   env: {
     browser: true,
     es2021: true,
-    node: true, // 添加這一行
+    node: true,
   },
   extends: [
-    'eslint:recommended',
-    'plugin:react/recommended',
-    'plugin:@typescript-eslint/recommended',
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "prettier", // 新增這一行
+  ],
+  plugins: [
+    "react",
+    "prettier", // 新增這一行
   ],
   parserOptions: {
     ecmaFeatures: {
       jsx: true,
     },
     ecmaVersion: 12,
-    sourceType: 'module',
+    sourceType: "module",
   },
-  plugins: [
-    'react',
-    '@typescript-eslint',
-  ],
   settings: {
-    'import/resolver': {
+    "import/resolver": {
       alias: {
-        map: [
-          ['@', './src'],
-        ],
-        extensions: ['.js', '.jsx', '.ts', '.tsx'],
+        map: [["@", "./src"]],
+        extensions: [".js", ".jsx", ".ts", ".tsx"],
       },
     },
   },
   rules: {
+    "prettier/prettier": "error", // 新增這一行
     // 你的其他 ESLint 規則
   },
 };
