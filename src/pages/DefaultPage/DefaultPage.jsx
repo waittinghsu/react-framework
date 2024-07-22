@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import RollingBall from './components/RollingBall';
 import {
@@ -9,10 +9,7 @@ import {
 } from '@/store/slices/menuSlice.js';
 import { fetchAuthData } from '@/store/slices/authSlice.js';
 import { Button, Table } from 'antd';
-import { gsap } from 'gsap';
 import './DefaultPage.scss';
-import swimming from '@/assets/DefaultPage/sport/swimming.jpeg';
-import housingDes from '@/assets/DefaultPage/housing/housing-desktop.webp';
 const sportImages = import.meta.glob('@/assets/DefaultPage/sport/*.jpeg');
 const housingImages = import.meta.glob('@/assets/DefaultPage/housing/*.webp');
 const carImages = import.meta.glob('@/assets/DefaultPage/car/*.avif');
@@ -30,9 +27,6 @@ const DefaultPage = () => {
   const {
     data: { token },
   } = useSelector((state) => state.auth);
-  const getImagePath = (category, imageName) => {
-    return `/src/assets/DefaultPage/${category}/${imageName}`;
-  };
 
   // 通用函数：加载图片路径并返回对象
   const loadImages = async (imageFiles) => {
