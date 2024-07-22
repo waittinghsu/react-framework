@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import PropTypes from 'prop-types';
 import { gsap } from 'gsap';
 
 const RollingBall = ({ containerRef }) => {
@@ -48,6 +49,11 @@ const RollingBall = ({ containerRef }) => {
       className="w-6 h-6 bg-green-400 rounded-full absolute z-10"
     ></div>
   );
+};
+
+// 使用 prop-types 对 props 进行类型检查
+RollingBall.propTypes = {
+  containerRef: PropTypes.object.isRequired,
 };
 
 export default RollingBall;
