@@ -1,24 +1,31 @@
 import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 
-const RollingBall = ({ containerWidth, containerHeight }) => {
+const RollingBall = ({ containerRef }) => {
   const ballRef = useRef(null);
-
+  const gsapRaf = useRef(gsap.timeline());
   useEffect(() => {
+    const {
+      // x: containerX,
+      // y: containerY,
+      height: containerHeight,
+      width: containerWidth,
+    } = containerRef.current.getBoundingClientRect();
     const ballSize = 24; // 球的大小为24px
-    const maxDistanceX = containerWidth - ballSize - 48;
-    const maxDistanceY = containerHeight - ballSize - 48;
+    const maxDistanceX = containerWidth - ballSize - 24;
+    const maxDistanceY = containerHeight - ballSize - 24;
 
     const getRandomPosition = () => ({
       x: gsap.utils.random(0, maxDistanceX),
       y: gsap.utils.random(0, maxDistanceY),
     });
-
+    // 初始随机位置
     const moveBall = () => {
+      if (!ballRef.current) return false;
       const { x, y } = getRandomPosition();
       const randomDuration = gsap.utils.random(3, 6);
 
-      gsap.to(ballRef.current, {
+      gsapRaf.current.to(ballRef.current, {
         x,
         y,
         duration: randomDuration,
@@ -28,7 +35,12 @@ const RollingBall = ({ containerWidth, containerHeight }) => {
     };
 
     moveBall();
-  }, [containerWidth, containerHeight]);
+    // destroy 揍這裡
+    return () => {
+      gsapRaf.current.kill();
+      gsap.killTweensOf(ballRef.current);
+    };
+  }, [containerRef]);
 
   return (
     <div

@@ -11,29 +11,62 @@ import { fetchAuthData } from '@/store/slices/authSlice.js';
 import { Button, Table } from 'antd';
 import { gsap } from 'gsap';
 import './DefaultPage.scss';
+import swimming from '@/assets/DefaultPage/sport/swimming.jpeg';
+import housingDes from '@/assets/DefaultPage/housing/housing-desktop.webp';
+const sportImages = import.meta.glob('@/assets/DefaultPage/sport/*.jpeg');
+const housingImages = import.meta.glob('@/assets/DefaultPage/housing/*.webp');
+const carImages = import.meta.glob('@/assets/DefaultPage/car/*.avif');
 
 const DefaultPage = () => {
   const [balls, setBalls] = useState([]);
+  const [imageSrcObj, setImageSrcObj] = useState({
+    sport: {},
+    housing: {},
+    car: {},
+  });
   const yellowBox = useRef(null);
-  const [yellowBoxWidth, setYellowBoxWidth] = useState(0);
-  const [yellowBoxHeight, setYellowBoxHeight] = useState(0);
-
   const dispatch = useDispatch();
   const { data: menuData, status, error } = useSelector((state) => state.menu);
   const {
     data: { token },
   } = useSelector((state) => state.auth);
+  const getImagePath = (category, imageName) => {
+    return `/src/assets/DefaultPage/${category}/${imageName}`;
+  };
+
+  // 通用函数：加载图片路径并返回对象
+  const loadImages = async (imageFiles) => {
+    const entries = await Promise.all(
+      Object.keys(imageFiles).map(async (path) => {
+        const [fileName] = path.split('/').pop().split('.'); // 获取无扩展名的文件名
+        const imgModule = await imageFiles[path]();
+        return [fileName, imgModule.default];
+      })
+    );
+    return Object.fromEntries(entries);
+  };
+
+  useEffect(() => {
+    const loadAllImage = async () => {
+      const sportImagesObj = await loadImages(sportImages);
+      const housingImagesObj = await loadImages(housingImages);
+      const carImagesObj = await loadImages(carImages);
+      // 获取并存储住房类图片
+      setImageSrcObj({
+        sport: sportImagesObj,
+        housing: housingImagesObj,
+        car: carImagesObj,
+      });
+    };
+    loadAllImage().then();
+  }, []);
+
+  useEffect(() => {}, [imageSrcObj]);
+
   useEffect(() => {
     dispatch(fetchMenuData());
     dispatch(fetchAuthData());
   }, [dispatch]);
-
-  useEffect(() => {
-    if (yellowBox.current) {
-      setYellowBoxWidth(yellowBox.current.offsetWidth);
-      setYellowBoxHeight(yellowBox.current.offsetHeight);
-    }
-  }, [balls]);
 
   const columns = [
     {
@@ -72,16 +105,13 @@ const DefaultPage = () => {
     const newItem = { id: Date.now(), name: `Menu ${menuData.length + 1}` };
     dispatch(addItem(newItem));
   };
-
   const handleRemove = (id) => {
     dispatch(removeItem(id));
   };
-
   const handleUpdate = (item) => {
     const updatedItem = { ...item, name: `${item.name} (Updated)` };
     dispatch(updateItem(updatedItem));
   };
-
   const handleSignUp = () => {
     dispatch(fetchAuthData());
   };
@@ -99,15 +129,51 @@ const DefaultPage = () => {
           <div className="absolute inset-0 h-screen">
             <picture className="">
               <img
-                src="https://images.pexels.com/photos/1249545/pexels-photo-1249545.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                src={imageSrcObj.sport['swimming']}
                 alt="Beautiful scenery"
                 className="inset-0 w-full h-full object-cover"
               />
             </picture>
           </div>
-          <div className="absolute inset-0 flex  justify-center">
+          <div className="absolute inset-0 flex flex-col items-center">
             <div className="text-white text-4xl font-bold mt-48">
               <div className="uppercase">泳渡人生 Swimming Life</div>
+            </div>
+            <div className="text-center my-4">
+              <button
+                className="mx-4 w-24 h-8 text-white bg-blue-600 rounded-full"
+                onClick={handleMakeBalls}
+              >
+                Make Ball
+              </button>
+              <button
+                className="w-24 h-8 text-white bg-red-600 rounded-full"
+                onClick={handleClearBalls}
+              >
+                Kill Ball
+              </button>
+            </div>
+            <div className="yellow-box relative w-full py-10">
+              <div className="w-50vw mx-auto">
+                {balls.map((_, index) => (
+                  <RollingBall key={index} containerRef={yellowBox} />
+                ))}
+                <div ref={yellowBox} className="flex flex-wrap">
+                  {Array(9)
+                    .fill(null)
+                    .map((_, index) => (
+                      <div key={index} className="w-[33.33%]">
+                        <div
+                          className={`relative bg-amber-${index + 1}00 pb-[100%]`}
+                        >
+                          <div
+                            className={`absolute flex items-center justify-center inset-0 ${index === 4 ? 'animate-blink' : ''}`}
+                          ></div>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -117,20 +183,20 @@ const DefaultPage = () => {
           <div className="full-image absolute inset-0 h-screen">
             <picture className="">
               <source
-                srcSet="https://digitalassets.tesla.com/tesla-contents/image/upload/f_auto,q_auto/Homepage-SolarPanels-01-Mobile.jpg"
+                srcSet={imageSrcObj.housing['housing-mobile']}
                 media="(max-width: 599px)"
               />
               <source
-                srcSet="https://digitalassets.tesla.com/tesla-contents/image/upload/f_auto,q_auto/Homepage-SolarPanels-01-Desktop"
+                srcSet={imageSrcObj.housing['housing-desktop']}
                 media="(min-width: 600px)"
               />
               <source
-                srcSet="https://digitalassets.tesla.com/tesla-contents/image/upload/f_auto,q_auto/Homepage-SolarPanels-01-Mobile.jpg"
+                srcSet={imageSrcObj.housing['housing-mobile-l']}
                 media="(min-width: 600px) and (orientation:portrait)"
               />
               <img
-                src="https://digitalassets.tesla.com/tesla-contents/image/upload/f_auto,q_auto/Homepage-SolarPanels-01-Desktop"
-                srcSet="https://digitalassets.tesla.com/tesla-contents/image/upload/f_auto,q_auto/Homepage-SolarPanels-01-Desktop"
+                src={imageSrcObj.housing['housing-desktop']}
+                srcSet={imageSrcObj.housing['housing-desktop']}
                 alt="Ranch style home powered by Tesla solar panels and Powerwall"
                 className="inset-0 w-full h-full object-cover"
               />
@@ -165,23 +231,23 @@ const DefaultPage = () => {
           <div className="full-image absolute inset-0 h-screen">
             <picture className="tcl-react-image tcl-react-media dx-hero-media">
               <source
-                srcSet="https://digitalassets.tesla.com/tesla-contents/image/upload/f_auto,q_auto/Cybertruck-Main-Hero-Hedgehog-Mobile.jpg"
+                srcSet={imageSrcObj.car['Cybertruck-Mobile']}
                 media="(max-width: 599px) and (orientation: portrait)"
               />
               <source
-                srcSet="https://digitalassets.tesla.com/tesla-contents/image/upload/f_auto,q_auto/Cybertruck-Main-Hero-Hedgehog-Mobile-Landscape.jpg"
+                srcSet={imageSrcObj.car['Cybertruck-Mobile-Landscape']}
                 media="(max-height: 599px) and (orientation: landscape)"
               />
               <source
-                srcSet="https://digitalassets.tesla.com/tesla-contents/image/upload/f_auto,q_auto/Cybertruck-Main-Hero-Hedgehog-Tablet.jpg"
+                srcSet={imageSrcObj.car['Cybertruck-Desktop-Tablet']}
                 media="(min-width: 600px) and (orientation: portrait)"
               />
               <source
-                srcSet="https://digitalassets.tesla.com/tesla-contents/image/upload/f_auto,q_auto/Cybertruck-Main-Hero-Hedgehog-Desktop.png"
+                srcSet={imageSrcObj.car['Cybertruck-Desktop']}
                 media="(min-width: 900px) and (orientation: landscape)"
               />
               <img
-                src="https://digitalassets.tesla.com/tesla-contents/image/upload/f_auto,q_auto/Cybertruck-Main-Hero-Hedgehog-Desktop.png"
+                src={imageSrcObj.car['Cybertruck-Desktop']}
                 className="inset-0 w-full h-full object-cover"
                 alt="Cybertruck"
               />
@@ -199,7 +265,7 @@ const DefaultPage = () => {
                 Sign In
               </button>
             </div>
-            <div className="flex flex-wrap w-full p-24">
+            <div className="flex flex-wrap w-50vw">
               {Array(9)
                 .fill(null)
                 .map((_, index) => (
@@ -209,42 +275,6 @@ const DefaultPage = () => {
                     </div>
                   </div>
                 ))}
-            </div>
-            <div className="text-center">
-              <button
-                className="my-4 w-24 h-12 text-white bg-blue-600 rounded-full"
-                onClick={handleMakeBalls}
-              >
-                Make Ball
-              </button>
-              <button
-                className="my-4 w-24 h-12 text-white bg-blue-600 rounded-full"
-                onClick={handleClearBalls}
-              >
-                Kill Ball
-              </button>
-            </div>
-            <div className="yellow-box relative w-full px-72 py-24 bg-yellow-100">
-              {balls.map((_, index) => (
-                <RollingBall
-                  key={index}
-                  containerWidth={yellowBoxWidth}
-                  containerHeight={yellowBoxHeight}
-                />
-              ))}
-              <div ref={yellowBox} className="flex flex-wrap w-full">
-                {Array(9)
-                  .fill(null)
-                  .map((_, index) => (
-                    <div key={index} className="w-[33.33%]">
-                      <div className="relative bg-amber-200 pb-[100%]">
-                        <div
-                          className={`absolute flex items-center justify-center inset-0 ${index === 4 ? 'animate-blink' : ''}`}
-                        ></div>
-                      </div>
-                    </div>
-                  ))}
-              </div>
             </div>
           </div>
         </section>
