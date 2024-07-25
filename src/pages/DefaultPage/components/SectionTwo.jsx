@@ -9,7 +9,7 @@ import {
 } from '@/store/slices/menuSlice.js';
 import { useDispatch, useSelector } from 'react-redux';
 
-const SectionOne = () => {
+const SectionTwo = () => {
   const dispatch = useDispatch();
   const { data: menuData, status, error } = useSelector((state) => state.menu);
   const columns = [
@@ -79,7 +79,7 @@ const SectionOne = () => {
     </div>
   );
 };
-SectionOne.propTypes = {
+SectionTwo.propTypes = {
   // children: PropTypes.node,
 };
-export default SectionOne;
+export default SectionTwo;

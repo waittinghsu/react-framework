@@ -155,13 +155,14 @@ const FullPictureFactory = ({ category }) => {
     }
   });
 
-  return (
-    imageSrcObj[category] && imageComponents[category](imageSrcObj[category])
-  );
+  return imageSrcObj[category]
+    ? imageComponents[category](imageSrcObj[category])
+    : null;
 };
 
 FullPictureFactory.propTypes = {
-  category: PropTypes.oneOf(['sport', 'housing', 'car', 'travel']).isRequired, // 使用 oneOf 来限制 category 的值
+  category: PropTypes.oneOf(['sport', 'housing', 'car', 'travel', 'empty'])
+    .isRequired, // 使用 oneOf 来限制 category 的值
 };
 
 export default FullPictureFactory;

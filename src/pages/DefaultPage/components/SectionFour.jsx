@@ -1,7 +1,7 @@
 import React from 'react';
 // import PropTypes from 'prop-types';
 
-const SectionOne = () => {
+const SectionFour = () => {
   return (
     <div className="cover-info inset-0 flex flex-col items-center">
       <div className="text-black text-4xl font-bold mt-48">
@@ -14,7 +14,7 @@ const SectionOne = () => {
     </div>
   );
 };
-SectionOne.propTypes = {
+SectionFour.propTypes = {
   // children: PropTypes.node,
 };
-export default SectionOne;
+export default SectionFour;

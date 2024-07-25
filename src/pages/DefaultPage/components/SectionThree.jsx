@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { fetchAuthData } from '@/store/slices/authSlice.js';
 // import PropTypes from 'prop-types';
 
-const SectionOne = () => {
+const SectionThree = () => {
   const dispatch = useDispatch();
   const handleSignUp = () => {
     dispatch(fetchAuthData());
@@ -33,7 +33,7 @@ const SectionOne = () => {
     </>
   );
 };
-SectionOne.propTypes = {
+SectionThree.propTypes = {
   // children: PropTypes.node,
 };
-export default SectionOne;
+export default SectionThree;
