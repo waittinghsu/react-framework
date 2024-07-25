@@ -6,6 +6,7 @@ import SectionOne from '@/pages/DefaultPage/components/SectionOne.jsx';
 import SectionTwo from '@/pages/DefaultPage/components/SectionTwo.jsx';
 import SectionThree from '@/pages/DefaultPage/components/SectionThree.jsx';
 import SectionFour from '@/pages/DefaultPage/components/SectionFour.jsx';
+import SectionFive from '@/pages/DefaultPage/components/SectionFive/SectionFive.jsx';
 
 const DefaultPage = () => {
   const {
@@ -45,6 +46,13 @@ const DefaultPage = () => {
         title="Travel"
       >
         <SectionFour></SectionFour>
+      </SectionFactory>
+      <SectionFactory
+        className="section-five"
+        pictureType="empty"
+        title="練習ＣＳＳ區塊"
+      >
+        <SectionFive></SectionFive>
       </SectionFactory>
     </div>
   );
