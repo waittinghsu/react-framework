@@ -1,0 +1,51 @@
+.form-info {
+  width: 550px;
+  .section-four-title {
+    display: inline-block;
+    animation: title-sequence 2s ease-out infinite;
+
+    @keyframes title-sequence {
+      0%, 20% {
+        opacity: 0;
+        transform: translateX(100%) skewX(-20deg);
+      }
+      22% {
+        opacity: 1;
+        transform: translateX(0) skewX(-20deg);
+      }
+      25% {
+        transform: skewX(60deg);
+      }
+      35% {
+        transform: translateX(0) skewX(-20deg);
+      }
+      42% {
+        transform: translateX(0) skewX(10deg);
+      }
+      49% {
+        transform: translateX(0) skewX(0);
+      }
+      50%, 70% {
+        opacity: 0;
+        transform: translateX(-100%) skewX(20deg);
+      }
+      72% {
+        opacity: 1;
+        transform: translateX(0) skewX(20deg);
+      }
+      75% {
+        transform: skewX(-60deg);
+      }
+      95% {
+        transform: translateX(0) skewX(20deg);
+      }
+      98%{
+        transform: translateX(0) skewX(-10deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translateX(100%) skewX(0deg);
+      }
+    }
+  }
+}
