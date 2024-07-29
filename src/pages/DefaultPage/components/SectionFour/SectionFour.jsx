@@ -8,7 +8,7 @@ const SectionFour = () => {
   });
   const [formValues, setFormValues] = useState({
     productName: '',
-    status: '',
+    status: 'disable',
     comment: '',
     email: '',
   });
@@ -121,15 +121,17 @@ const SectionFour = () => {
     }
     Object.keys(rules).forEach((key) => {
       if (rules[key].ruleList.length > 0) {
-        rules[key].ruleList.forEach((rule) => {
-          if (rule.isRequired) {
-            if (formValues[key] === '') {
-              newErrors[key] = rule.message;
-            }
+        for (let i = 0; i < rules[key].ruleList.length; i++) {
+          const rule = rules[key].ruleList[i];
+          if (rule.isRequired && formValues[key] === '') {
+            newErrors[key] = rule.message;
+            break; // Early exit from the loop
           }
-          rule.validator &&
+          if (rule.validator) {
             rule.validator(rule, formValues[key], callback.bind(null, key));
-        });
+            break; // Early exit from the loop
+          }
+        }
       }
     });
     // 最後統一更新錯誤狀態
