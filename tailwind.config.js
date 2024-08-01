@@ -17,6 +17,7 @@ module.exports = {
         '300px': '300px',
         '25vw': '25vw',
         '50vw': '50vw',
+        50: '50%',
         '75vw': '75vw',
         'fill-available': '-webkit-fill-available',
       },
