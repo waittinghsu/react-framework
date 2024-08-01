@@ -1,3 +1,4 @@
+import React from 'react';
 import PropTypes from 'prop-types';
 import BDHeader from './components/BDHeader.jsx';
 import Footer from './components/Footer.jsx';

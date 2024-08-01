@@ -7,6 +7,7 @@ const { SubMenu } = Menu;
 
 const navLinks = [
   { path: '/demo/default-page', label: 'Omega Page' },
+  { path: '/demo/day-one', label: 'Day One' },
   { path: '/demo/color', label: 'Color Page' },
   { path: '/demo/icon', label: 'Icon Page' },
 ];

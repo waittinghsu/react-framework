@@ -1,3 +1,4 @@
+import React from 'react';
 import PropTypes from 'prop-types';
 import TransparentHeader from './components/TransparentHeader.jsx';
 import Footer from './components/Footer.jsx';

@@ -35,6 +35,16 @@ const SectionFour = () => {
           },
           message: '格式錯誤必須遵照此格式 （產品名-產品數量）',
         },
+        {
+          validator: (rule, value, callback) => {
+            if (!value.length > 10) {
+              callback(new Error(rule.message)); // 驗證失敗，觸發錯誤回調
+            } else {
+              callback(); // 驗證成功，無錯誤
+            }
+          },
+          message: '名稱不可太長(最長10個字)',
+        },
       ],
     },
     status: {
@@ -153,7 +163,7 @@ const SectionFour = () => {
 
   return (
     <div className="form-info flex flex-col items-center bg-gray-700 mt-20 rounded-lg dark">
-      <div className="text-4xl font-bold my-8">
+      <div className="text-4xl font-bold my-4">
         <label
           className="section-four-title text-white"
           htmlFor="Form Validate"
@@ -161,8 +171,8 @@ const SectionFour = () => {
           Form Validate
         </label>
       </div>
-      <div className="flex flex-col justify-center items-center w-full rounded-lg px-4">
-        <div className="w-full p-4 bg-gray-600">
+      <div className="w-full rounded-lg px-4">
+        <div className="w-full p-4 bg-gray-600 rounded-lg">
           {renderLabel('productName')}
           <input
             name="productName"
@@ -171,9 +181,7 @@ const SectionFour = () => {
             className="w-full bg-white text-black p-2 rounded border border-gray-300 dark:bg-gray-900 dark:text-white dark:border-gray-700"
             onChange={handleChange}
           />
-          {errors.productName && (
-            <p className="text-red-600">{errors.productName}</p>
-          )}
+          {renderErrorMessage('productName')}
           {renderLabel('status')}
           <select
             name="status"
