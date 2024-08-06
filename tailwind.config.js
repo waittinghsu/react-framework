@@ -18,6 +18,7 @@ module.exports = {
         '25vw': '25vw',
         '50vw': '50vw',
         50: '50%',
+        33: '33.33%',
         '75vw': '75vw',
         'fill-available': '-webkit-fill-available',
       },
