@@ -1,3 +1,4 @@
+import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { store } from './store/store';
@@ -13,7 +14,7 @@ const root = createRoot(container);
 
 // 使用 createRoot 初始化應用
 root.render(
-    <Provider store={store}>
-      <AppRouter />
-    </Provider>
+  <Provider store={store}>
+    <AppRouter />
+  </Provider>
 );
