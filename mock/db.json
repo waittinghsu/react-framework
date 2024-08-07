@@ -1,0 +1,7 @@
+{
+	"react-framework/api/v1/demo/userInfo": { "id": 1, "name": "John Doe" },
+	"react-framework/api/v1/demo/menu": [
+		{ "id": 1, "name": "Menu 1" },
+		{ "id": 2, "name": "Menu 2" }
+	]
+}

@@ -1,6 +1,6 @@
 export default [
   {
-    url: '/api/v1/auth',
+    url: '/react-framework/api/v1/auth',
     method: 'get',
     response: () => {
       return {
@@ -13,7 +13,7 @@ export default [
     timeout: 3000, // 特定请求的延迟（毫秒）
   },
   {
-    url: '/api/v1/userInfo',
+    url: '/react-framework/api/v1/userInfo',
     method: 'get',
     response: () => {
       return {
@@ -28,7 +28,7 @@ export default [
     },
   },
   {
-    url: '/api/v1/demo/menu',
+    url: '/react-framework/api/v1/demo/menu',
     method: 'get',
     response: () => {
       return {
@@ -43,7 +43,7 @@ export default [
     timeout: 3000, // 特定请求的延迟（毫秒）
   },
   {
-    url: '/api/v1/demo/menu',
+    url: '/react-framework/api/v1/demo/menu',
     method: 'post',
     response: ({ body }) => {
       const newItem = {
@@ -57,7 +57,7 @@ export default [
     },
   },
   {
-    url: '/api/v1/demo/menu/:id',
+    url: '/react-framework/api/v1/demo/menu/:id',
     method: 'put',
     response: ({ body, query }) => {
       const updatedItem = {
@@ -71,7 +71,7 @@ export default [
     },
   },
   {
-    url: '/api/v1/demo/menu/:id',
+    url: '/react-framework/api/v1/demo/menu/:id',
     method: 'delete',
     response: ({ query }) => {
       return {

@@ -14,7 +14,7 @@ import MainLayout from '../layouts/MainLayout';
 import BDLayout from '../layouts/BDLayout';
 
 const AppRouter = () => (
-  <Router>
+  <Router basename="/react-framework">
     <Routes>
       <Route path="/" element={<Navigate to="demo/default-page" />} />
 
