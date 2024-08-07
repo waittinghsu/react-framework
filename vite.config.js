@@ -5,6 +5,7 @@ import { viteMockServe } from 'vite-plugin-mock';
 const __dirname = path.resolve();
 
 export default defineConfig({
+  // base: '', //這邊換成你的專案名
   plugins: [
     react(),
     viteMockServe({
