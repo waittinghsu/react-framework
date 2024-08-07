@@ -8,6 +8,8 @@ module.exports = {
     ],
     safelist: [
       ...Array.from({ length: 10 }, (_, i) => `bg-amber-${i + 1}00`),
+      ...Array.from({ length: 10 }, (_, i) => `bg-indigo-${i + 1}00`),
+      ...Array.from({ length: 24 }, (_, i) => `bottom-${i}`),
       // 扩展其他可能的颜色
     ],
   },
