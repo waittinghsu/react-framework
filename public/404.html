@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Page Not Found</title>
+  <script>
+    // GitHub Pages 404 重定向到根应用
+    (function () {
+      var redirect = window.location.protocol + '//' + window.location.hostname + (window.location.port ? ':' + window.location.port : '') + '/react-framework/index.html';
+      if (window.location.pathname !== '/react-framework/404.html') {
+        window.location.href = redirect;
+      }
+    })();
+  </script>
+</head>
+<body>
+<p>If you are not redirected in 5 seconds, <a id="redirect-link" href="/react-framework/index.html">click here</a></p>
+</body>
+</html>
