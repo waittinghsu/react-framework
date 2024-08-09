@@ -5,31 +5,37 @@ module.exports = {
     node: true,
   },
   extends: [
-    "eslint:recommended",
-    "plugin:react/recommended",
-    "prettier", // 新增這一行
+    'eslint:recommended',
+    'plugin:react/recommended',
+    'plugin:@typescript-eslint/recommended',
   ],
-  plugins: [
-    "react",
-    "prettier", // 新增這一行
-  ],
+  parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaFeatures: {
       jsx: true,
     },
     ecmaVersion: 12,
-    sourceType: "module",
+    sourceType: 'module',
   },
+  plugins: [
+    'react',
+    '@typescript-eslint',
+  ],
   settings: {
-    "import/resolver": {
+    react: {
+      version: 'detect',
+    },
+    'import/resolver': {
       alias: {
-        map: [["@", "./src"]],
-        extensions: [".js", ".jsx", ".ts", ".tsx"],
+        map: [['@', './src']],
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
       },
     },
   },
   rules: {
-    "prettier/prettier": "error", // 新增這一行
-    // 你的其他 ESLint 規則
+    'quotes': ['error', 'single'], // 强制使用单引号
+    'semi': ['error', 'always'], // 强制使用分号
+    '@typescript-eslint/no-unused-vars': 'error', // 避免未使用的变量
+    'react/react-in-jsx-scope': 'off', // React 17+ 不需要在作用域内使用 React
   },
 };
