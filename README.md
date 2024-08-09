@@ -18,7 +18,7 @@ src/
 │       ├── Header.scss
 │       └── Footer.scss
 ├── pages/
-│   ├── DefaultPage.jsx
+│   ├── DefaultPage
 │   ├── ColorPage.jsx
 │   └── IconPage.jsx
 ├── router/

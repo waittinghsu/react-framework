@@ -8,8 +8,8 @@ import {
 } from 'react-router-dom';
 import DefaultPage from '../pages/DefaultPage/DefaultPage.jsx';
 import ColorPage from '../pages/ColorPage';
-import IconPage from '../pages/IconPage';
-import DayOne from '../pages/DayOne/DayOne';
+import IconPage from '../pages/IconPage/IconPage.tsx';
+import DayOne from '../pages/DayOne/DayOne.tsx';
 import MainLayout from '../layouts/MainLayout';
 import BDLayout from '../layouts/BDLayout';
 
