@@ -1,4 +1,5 @@
-import React, { useEffect, useState, ChangeEvent } from 'react';
+import React, { useEffect, useState, ChangeEvent, ReactNode } from 'react';
+import { Row, Col, InputNumber } from 'antd';
 import './SectionFour.scss';
 
 type BaseChoiceItem = {
@@ -16,7 +17,7 @@ type Choices = {
 }
 
 interface Form {
-  productName: string;
+  supplier: string;
   category: number | null,
   product: number | null,
   status: string;
@@ -26,7 +27,7 @@ interface Form {
 }
 
 interface ErrorMessage {
-  // productName: string;
+  // supplier: string;
   // category: string,
   // product: string,
   // status: string;
@@ -36,7 +37,7 @@ interface ErrorMessage {
   [key: string]: string
 }
 
-interface RuleItem<T = string | number> {
+interface RuleItem<T = string | number | null> {
   isRequired?: boolean;
   validator?: (rule: RuleItem<T>, value: T, callback: (error?: Error) => void)
     => void;
@@ -49,11 +50,18 @@ interface BaseRuleObject<T = string | number> {
 }
 
 interface Rules {
-  productName: BaseRuleObject<string>;
+  supplier: BaseRuleObject<string>;
   status: BaseRuleObject<string>;
+  product: BaseRuleObject<number>;
+  category: BaseRuleObject<number>;
   count: BaseRuleObject<number>;
   comment: BaseRuleObject<string>;
   email: BaseRuleObject<string>;
+}
+
+interface RenderFieldFactoryProps {
+  children: ReactNode;
+  fieldKey: keyof Rules;
 }
 
 const fetchData = (): Promise<Choices> => {
@@ -90,17 +98,17 @@ const SectionFour:React.FC = () => {
   });
 
   const [formValues, setFormValues] = useState<Form>({
-    productName: '',
-    category: null,
-    product: null,
+    supplier: '',
     status: 'disable',
+    product: null,
+    category: null,
     count: 0,
     comment: '',
     email: '',
   });
 
   const [errors, setErrors] = useState<ErrorMessage>({
-    productName: '',
+    supplier: '',
     category: '',
     product: '',
     status: '',
@@ -110,8 +118,8 @@ const SectionFour:React.FC = () => {
   });
 
   const rules: Rules = {
-    productName: {
-      name: '產品名稱',
+    supplier: {
+      name: '供應商名稱',
       ruleList: [
         { isRequired: true, message: '請填寫產品名稱' },
         {
@@ -139,6 +147,14 @@ const SectionFour:React.FC = () => {
     },
     status: {
       name: '狀態',
+      ruleList: [],
+    },
+    product: {
+      name: '產品',
+      ruleList: [],
+    },
+    category: {
+      name: '類型',
       ruleList: [],
     },
     count: {
@@ -192,7 +208,7 @@ const SectionFour:React.FC = () => {
     );
   };
 
-  const renderOptions = (options: BaseChoiceItem[] | ConnectChoiceItem[]) => {
+  const renderOptions = (options: BaseChoiceItem[] | ConnectChoiceItem[]): ReactNode => {
     return options.map((option) => (
       <option key={option.id} value={option.id}>
         {option.name}
@@ -200,8 +216,8 @@ const SectionFour:React.FC = () => {
     ));
   };
 
-  const renderErrorMessage = (key: keyof ErrorMessage) => {
-    return errors[key] && <p className="text-red-600">{errors[key]}</p>;
+  const renderErrorMessage = (key: keyof ErrorMessage): ReactNode => {
+    return errors[key] ? <p className="text-red-600">{errors[key]}</p> : null;
   };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -209,8 +225,15 @@ const SectionFour:React.FC = () => {
     setErrors({ ...errors, [e.target.name]: '' });
   };
 
+  const createOnChangeHandler = (name: string) => (value: number | null | string) => {
+    if (['number', 'string'].includes(typeof value ) || value === null) {
+      // 處理 InputNumber 輸入
+      setFormValues({ ...formValues, [name]: value });
+      setErrors({ ...errors, [name]: '' });
+    }
+  };
+
   const handleSubmit = () => {
-    // setErrors({ ...errors, productName: 'test' });
     validate().then((valid) => {
       if (valid) {
         console.log('post api');
@@ -262,6 +285,16 @@ const SectionFour:React.FC = () => {
     });
   };
 
+  const RenderFieldFactory:React.FC<RenderFieldFactoryProps> = ({ children, fieldKey }): ReactNode => {
+    return (
+      <>
+        {renderLabel(fieldKey)}
+        {children}
+        {renderErrorMessage(fieldKey)}
+      </>
+    );
+  };
+
   useEffect(() => {
     fetchData().then(data => {
       setChoices({
@@ -288,43 +321,87 @@ const SectionFour:React.FC = () => {
       </div>
       <div className="w-full rounded-lg px-4">
         <div className="w-full p-4 bg-gray-600 rounded-lg">
-          {renderLabel('productName')}
-          <input
-            name="productName"
-            type="text"
-            value={formValues.productName}
-            className="w-full bg-white text-black p-2 rounded border border-gray-300 dark:bg-gray-900 dark:text-white dark:border-gray-700"
-            onChange={handleChange}
-          />
-          {renderErrorMessage('productName')}
-          {renderLabel('status')}
-          <select
-            name="status"
-            value={formValues.status}
-            className="w-full bg-white text-black p-2 rounded border border-gray-300 dark:bg-gray-900 dark:text-white dark:border-gray-700"
-            onChange={handleChange}
-          >
-            {renderOptions(choices.status)}
-          </select>
-          {renderErrorMessage('status')}
-          {renderLabel('comment')}
-          <textarea
-            name="comment"
-            rows={4}
-            value={formValues.comment}
-            className="w-full bg-white text-black p-2 rounded border border-gray-300 dark:bg-gray-900 dark:text-white dark:border-gray-700"
-            onChange={handleChange}
-          />
-          {renderErrorMessage('comment')}
-          {renderLabel('email')}
-          <input
-            name="email"
-            type="text"
-            value={formValues.email}
-            className="w-full bg-white text-black p-2 rounded border border-gray-300 dark:bg-gray-900 dark:text-white dark:border-gray-700"
-            onChange={handleChange}
-          />
-          {errors.email && <p className="text-red-600">{errors.email}</p>}
+          <Row gutter={[16, 16]}>
+            <Col span={12}>
+              <RenderFieldFactory fieldKey="supplier">
+                <input
+                  name="supplier"
+                  type="text"
+                  value={formValues.supplier}
+                  className="w-full bg-white text-black p-2 rounded border border-gray-300 dark:bg-gray-900 dark:text-white dark:border-gray-700"
+                  onChange={handleChange}
+                />
+              </RenderFieldFactory>
+            </Col>
+            <Col span={12}>
+              <RenderFieldFactory fieldKey="status">
+                <select
+                  name="status"
+                  value={formValues.status}
+                  className="w-full bg-white text-black p-2 rounded border border-gray-300 dark:bg-gray-900 dark:text-white dark:border-gray-700"
+                  onChange={handleChange}
+                >
+                  {renderOptions(choices.status)}
+                </select>
+              </RenderFieldFactory>
+            </Col>
+            <Col span={12}>
+              <RenderFieldFactory fieldKey="product">
+                <select
+                  name="product"
+                  value={formValues.product || ''}
+                  className="w-full bg-white text-black p-2 rounded border border-gray-300 dark:bg-gray-900 dark:text-white dark:border-gray-700"
+                  onChange={handleChange}
+                >
+                  {renderOptions(choices.product)}
+                </select>
+              </RenderFieldFactory>
+            </Col>
+            <Col span={12}>
+              <RenderFieldFactory fieldKey="category">
+                <select
+                  name="category"
+                  value={formValues.category || ''}
+                  className="w-full bg-white text-black p-2 rounded border border-gray-300 dark:bg-gray-900 dark:text-white dark:border-gray-700"
+                  onChange={handleChange}
+                >
+                  {renderOptions(choices.category)}
+                </select>
+              </RenderFieldFactory>
+            </Col>
+            <Col span={24}>
+              <RenderFieldFactory fieldKey="count">
+                <InputNumber
+                  name="count"
+                  value={formValues.count}
+                  className="w-full bg-white p-2 rounded border border-gray-300 dark:bg-gray-900  dark:border-gray-700 omega"
+                  onChange={createOnChangeHandler('count')}
+                />
+              </RenderFieldFactory>
+            </Col>
+            <Col span={24}>
+              <RenderFieldFactory fieldKey="comment">
+                <textarea
+                  name="comment"
+                  rows={4}
+                  value={formValues.comment}
+                  className="w-full bg-white text-black p-2 rounded border border-gray-300 dark:bg-gray-900 dark:text-white dark:border-gray-700"
+                  onChange={handleChange}
+                />
+              </RenderFieldFactory>
+            </Col>
+            <Col span={24}>
+              <RenderFieldFactory fieldKey="email">
+                <input
+                  name="email"
+                  type="text"
+                  value={formValues.email}
+                  className="w-full bg-white text-black p-2 rounded border border-gray-300 dark:bg-gray-900 dark:text-white dark:border-gray-700"
+                  onChange={handleChange}
+                />
+              </RenderFieldFactory>
+            </Col>
+          </Row>
         </div>
       </div>
       <div className="flex justify-end mx-16 opacity-100 my-4">
