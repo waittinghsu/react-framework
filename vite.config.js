@@ -6,7 +6,7 @@ const __dirname = path.resolve();
 
 export default defineConfig(({ mode }) => {
   return {
-    base: '/react-framework', //這邊換成你的專案名
+    base: mode === 'production' ? '/react-framework/' : '/', //這邊換成你的專案名
     plugins: [
       react(),
       viteMockServe({

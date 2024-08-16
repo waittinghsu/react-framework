@@ -5,7 +5,7 @@ import SectionFactory from '@/pages/DefaultPage/components/SectionFactory.jsx';
 import SectionOne from '@/pages/DefaultPage/components/SectionOne.jsx';
 import SectionTwo from '@/pages/DefaultPage/components/SectionTwo.jsx';
 import SectionThree from '@/pages/DefaultPage/components/SectionThree.jsx';
-import SectionFour from '@/pages/DefaultPage/components/SectionFour/SectionFour.jsx';
+import SectionFour from '@/pages/DefaultPage/components/SectionFour/SectionFour.tsx';
 import SectionFive from '@/pages/DefaultPage/components/SectionFive/SectionFive.jsx';
 
 const DefaultPage = () => {

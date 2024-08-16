@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, ReactElement } from 'react';
 import { Button, Input } from 'antd';
 const MIN_DISK = 3;
 const MAX_DISK = 6;
 
-type DiskListFunc = (pillarName: string, spaceIndex:number) => JSX.Element;
+type DiskListFunc = (pillarName: string, spaceIndex:number) => ReactElement;
 
 interface DiskList {
   [key: number]: DiskListFunc
 }
 
 interface Spaces {
-  spaces: number[];
+  spaces: number[]
 }
 interface Pillar {
   [key: string]: Spaces
