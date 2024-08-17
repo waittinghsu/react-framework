@@ -1,5 +1,5 @@
 import React, { useEffect, useState, ChangeEvent, ReactNode } from 'react';
-import { Row, Col, InputNumber } from 'antd';
+import { Row, Col, InputNumber, InputNumberProps, Button, Spin } from 'antd';
 import './SectionFour.scss';
 
 type BaseChoiceItem = {
@@ -7,13 +7,13 @@ type BaseChoiceItem = {
   name: string
 }
 
-type ConnectChoiceItem = BaseChoiceItem & {
+type ConcatChoiceItem = BaseChoiceItem & {
   parent: number,
 }
 
 type Choices = {
-  category: ConnectChoiceItem[]
-  [key: string]: BaseChoiceItem[] | ConnectChoiceItem[]
+  category: ConcatChoiceItem[]
+  [key: string]: BaseChoiceItem[] | ConcatChoiceItem[]
 }
 
 interface Form {
@@ -64,6 +64,8 @@ interface RenderFieldFactoryProps {
   fieldKey: keyof Rules;
 }
 
+type ElInputNumberProps = InputNumberProps;
+
 const fetchData = (): Promise<Choices> => {
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -81,8 +83,8 @@ const fetchData = (): Promise<Choices> => {
         product: [
           { id: 1, name: 'A01' },
           { id: 2, name: 'A02' },
-          { id: 3, name: 'A02' },
-          { id: 4, name: 'A02' },
+          { id: 3, name: 'G05' },
+          { id: 4, name: 'J9' },
         ],
       };
       resolve(data);
@@ -90,7 +92,17 @@ const fetchData = (): Promise<Choices> => {
   });
 };
 
+const delayThreeSeconds = () => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(true);
+    }, 1000);
+  });
+};
+
 const SectionFour:React.FC = () => {
+  const [loading, setLoading] = useState<boolean>(false);
+
   const [choices, setChoices] = useState<Choices>({
     product:[],
     category:[],
@@ -116,6 +128,12 @@ const SectionFour:React.FC = () => {
     comment: '',
     email: '',
   });
+
+  const [categoryChoice, setCategoryChoice] = useState<ConcatChoiceItem[]>([]);
+
+  const toggleLoading = () => {
+    setLoading((prevLoading) => !prevLoading);
+  };
 
   const rules: Rules = {
     supplier: {
@@ -208,7 +226,7 @@ const SectionFour:React.FC = () => {
     );
   };
 
-  const renderOptions = (options: BaseChoiceItem[] | ConnectChoiceItem[]): ReactNode => {
+  const renderOptions = (options: BaseChoiceItem[] | ConcatChoiceItem[]): ReactNode => {
     return options.map((option) => (
       <option key={option.id} value={option.id}>
         {option.name}
@@ -218,6 +236,31 @@ const SectionFour:React.FC = () => {
 
   const renderErrorMessage = (key: keyof ErrorMessage): ReactNode => {
     return errors[key] ? <p className="text-red-600">{errors[key]}</p> : null;
+  };
+
+  const ElInputNumber:React.FC<ElInputNumberProps> = (props) => {
+    const { value, onChange } = props;
+    const newValue = value ? parseInt(value.toString(), 10) : 1;
+    const handleIncrease = () => {
+      if(onChange){
+        onChange(newValue + 1);
+      }
+    };
+    const handleDecrease = () => {
+      if(onChange){
+        onChange(newValue - 1);
+      }
+    };
+    return (
+      <div className="flex items-center">
+        <Button className="flex rounded-r-none h-[46px]" onClick={handleDecrease}>-</Button>
+        <InputNumber
+          rootClassName="omega"
+          {...props}
+        />
+        <Button className="flex  rounded-l-none h-[46px]" onClick={handleIncrease}>+</Button>
+      </div>
+    );
   };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -233,8 +276,24 @@ const SectionFour:React.FC = () => {
     }
   };
 
+  const handleProductChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    handleChange(e);
+    setFormValues((prevFormValues) =>({ ...prevFormValues, category: null }));
+    if(e.target.value){
+      setCategoryChoice(choices.category.filter(item => item.parent === parseInt(e.target.value, 10)));
+    }
+  };
+
   const handleSubmit = () => {
+    setFormValues({ ...formValues, product: 1 });
+    setFormValues({ ...formValues, category: 2 });
+    setFormValues((prevFormValues) =>({ ...prevFormValues, count: 4 }));
+
     validate().then((valid) => {
+      toggleLoading();
+      delayThreeSeconds().finally(()=> {
+        toggleLoading();
+      });
       if (valid) {
         console.log('post api');
       }
@@ -296,6 +355,7 @@ const SectionFour:React.FC = () => {
   };
 
   useEffect(() => {
+    toggleLoading();
     fetchData().then(data => {
       setChoices({
        ...choices,
@@ -306,113 +366,120 @@ const SectionFour:React.FC = () => {
           { id: 'disable', name: '未啟用' },
         ],
       });
+    }).finally(()=>{
+      toggleLoading();
     });
   }, []);
 
   return (
-    <div className="form-info flex flex-col items-center bg-gray-700 mt-20 rounded-lg dark">
-      <div className="text-4xl font-bold my-4">
-        <label
+    <Spin spinning={loading} tip="加载中...">
+      <div className="form-info flex flex-col items-center bg-gray-700 mt-20 rounded-lg dark">
+        <div className="text-4xl font-bold my-4">
+          <label
           className="section-four-title text-white"
           htmlFor="Form Validate"
-        >
-          Form Validate
-        </label>
-      </div>
-      <div className="w-full rounded-lg px-4">
-        <div className="w-full p-4 bg-gray-600 rounded-lg">
-          <Row gutter={[16, 16]}>
-            <Col span={12}>
-              <RenderFieldFactory fieldKey="supplier">
-                <input
-                  name="supplier"
-                  type="text"
-                  value={formValues.supplier}
-                  className="w-full bg-white text-black p-2 rounded border border-gray-300 dark:bg-gray-900 dark:text-white dark:border-gray-700"
-                  onChange={handleChange}
-                />
-              </RenderFieldFactory>
-            </Col>
-            <Col span={12}>
-              <RenderFieldFactory fieldKey="status">
-                <select
-                  name="status"
-                  value={formValues.status}
-                  className="w-full bg-white text-black p-2 rounded border border-gray-300 dark:bg-gray-900 dark:text-white dark:border-gray-700"
-                  onChange={handleChange}
-                >
-                  {renderOptions(choices.status)}
-                </select>
-              </RenderFieldFactory>
-            </Col>
-            <Col span={12}>
-              <RenderFieldFactory fieldKey="product">
-                <select
-                  name="product"
-                  value={formValues.product || ''}
-                  className="w-full bg-white text-black p-2 rounded border border-gray-300 dark:bg-gray-900 dark:text-white dark:border-gray-700"
-                  onChange={handleChange}
-                >
-                  {renderOptions(choices.product)}
-                </select>
-              </RenderFieldFactory>
-            </Col>
-            <Col span={12}>
-              <RenderFieldFactory fieldKey="category">
-                <select
-                  name="category"
-                  value={formValues.category || ''}
-                  className="w-full bg-white text-black p-2 rounded border border-gray-300 dark:bg-gray-900 dark:text-white dark:border-gray-700"
-                  onChange={handleChange}
-                >
-                  {renderOptions(choices.category)}
-                </select>
-              </RenderFieldFactory>
-            </Col>
-            <Col span={24}>
-              <RenderFieldFactory fieldKey="count">
-                <InputNumber
-                  name="count"
-                  value={formValues.count}
-                  className="w-full bg-white p-2 rounded border border-gray-300 dark:bg-gray-900  dark:border-gray-700 omega"
-                  onChange={createOnChangeHandler('count')}
-                />
-              </RenderFieldFactory>
-            </Col>
-            <Col span={24}>
-              <RenderFieldFactory fieldKey="comment">
-                <textarea
-                  name="comment"
-                  rows={4}
-                  value={formValues.comment}
-                  className="w-full bg-white text-black p-2 rounded border border-gray-300 dark:bg-gray-900 dark:text-white dark:border-gray-700"
-                  onChange={handleChange}
-                />
-              </RenderFieldFactory>
-            </Col>
-            <Col span={24}>
-              <RenderFieldFactory fieldKey="email">
-                <input
-                  name="email"
-                  type="text"
-                  value={formValues.email}
-                  className="w-full bg-white text-black p-2 rounded border border-gray-300 dark:bg-gray-900 dark:text-white dark:border-gray-700"
-                  onChange={handleChange}
-                />
-              </RenderFieldFactory>
-            </Col>
-          </Row>
+          >
+            Form Validate
+          </label>
+          {formValues.product}_ {formValues.category}
         </div>
-      </div>
-      <div className="flex justify-end mx-16 opacity-100 my-4">
-        <button
+        <div className="w-full rounded-lg px-4">
+          <div className="w-full p-4 bg-gray-600 rounded-lg">
+            <Row gutter={[16, 16]}>
+              <Col span={12}>
+                <RenderFieldFactory fieldKey="supplier">
+                  <input
+                    name="supplier"
+                    type="text"
+                    value={formValues.supplier}
+                    className="w-full bg-white text-black p-2 rounded border border-gray-300 dark:bg-gray-900 dark:text-white dark:border-gray-700"
+                    onChange={handleChange}
+                  />
+                </RenderFieldFactory>
+              </Col>
+              <Col span={12}>
+                <RenderFieldFactory fieldKey="status">
+                  <select
+                    name="status"
+                    value={formValues.status}
+                    className="w-full bg-white text-black p-2 rounded border border-gray-300 dark:bg-gray-900 dark:text-white dark:border-gray-700"
+                    onChange={handleChange}
+                  >
+                    {renderOptions(choices.status)}
+                  </select>
+                </RenderFieldFactory>
+              </Col>
+              <Col span={12}>
+                <RenderFieldFactory fieldKey="product">
+                  <select
+                    name="product"
+                    value={formValues.product || ''}
+                    className="w-full bg-white text-black p-2 rounded border border-gray-300 dark:bg-gray-900 dark:text-white dark:border-gray-700"
+                    onChange={handleProductChange}
+                  >
+                    <option key="product_empty" value={''}>請選擇</option>
+                    {renderOptions(choices.product)}
+                  </select>
+                </RenderFieldFactory>
+              </Col>
+              <Col span={12}>
+                <RenderFieldFactory fieldKey="category">
+                  <select
+                    name="category"
+                    value={formValues.category || ''}
+                    className="w-full bg-white text-black p-2 rounded border border-gray-300 dark:bg-gray-900 dark:text-white dark:border-gray-700"
+                    onChange={handleChange}
+                  >
+                    <option key="category_empty" value={''}>請選擇</option>
+                    {renderOptions(categoryChoice)}
+                  </select>
+                </RenderFieldFactory>
+              </Col>
+              <Col span={24}>
+                <RenderFieldFactory fieldKey="count">
+                  <ElInputNumber
+                    name="count"
+                    value={formValues.count}
+                    className="w-full bg-white p-2 rounded border border-gray-300 dark:bg-gray-900  dark:border-gray-700"
+                    onChange={createOnChangeHandler('count')}
+                  />
+                </RenderFieldFactory>
+              </Col>
+              <Col span={24}>
+                <RenderFieldFactory fieldKey="comment">
+                  <textarea
+                    name="comment"
+                    rows={4}
+                    value={formValues.comment}
+                    className="w-full bg-white text-black p-2 rounded border border-gray-300 dark:bg-gray-900 dark:text-white dark:border-gray-700"
+                    onChange={handleChange}
+                  />
+                </RenderFieldFactory>
+              </Col>
+              <Col span={24}>
+                <RenderFieldFactory fieldKey="email">
+                  <input
+                    name="email"
+                    type="text"
+                    value={formValues.email}
+                    className="w-full bg-white text-black p-2 rounded border border-gray-300 dark:bg-gray-900 dark:text-white dark:border-gray-700"
+                    onChange={handleChange}
+                  />
+                </RenderFieldFactory>
+              </Col>
+            </Row>
+          </div>
+        </div>
+        <div className="flex justify-end mx-16 opacity-100 my-4">
+          <button
           className="bg-blue-600 text-white font-bold py-2 px-4 rounded transition-slow hover:bg-blue-300 hover-transition-fast"
           onClick={handleSubmit}
-        >
-          Submit
-        </button>
+          >
+            Submit
+          </button>
+        </div>
       </div>
-    </div>
+    </Spin>
   );
 };
 SectionFour.propTypes = {
