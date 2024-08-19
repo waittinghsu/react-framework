@@ -38,6 +38,7 @@ module.exports = {
   rules: {
     'quotes': ['error', 'single'], // 强制使用单引号
     'semi': ['error', 'always'], // 强制使用分号
+    'comma-spacing': ['error', { 'before': false, 'after': true }], // 确保逗号后面有空格
     '@typescript-eslint/no-unused-vars': 'error', // 避免未使用的变量
     'react/react-in-jsx-scope': 'off', // React 17+ 不需要在作用域内使用 React
     'react/jsx-uses-react': 'off', // React 17+ 不需要在 JSX 文件中显式引用 React
