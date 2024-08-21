@@ -304,7 +304,7 @@ const SectionFour:React.FC = () => {
       setCategoryChoice(choices.category.filter(item => item.parent === parseInt(value, 10)));
     }
 
-  }, [categoryChoice]);
+  }, [categoryChoice, choices]);
 
   const handleSubmit = () => {
     setFormValues({ ...formValues, product: 1 });
