@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, ChangeEvent, ReactNode } from 'react';
+import React, { useEffect, useState, useCallback, useMemo, ChangeEvent, ReactNode } from 'react';
 import { Row, Col, InputNumber, InputNumberProps, Button, Spin } from 'antd';
 import './SectionFour.scss';
 
@@ -234,6 +234,14 @@ const rules: Rules = {
   },
 };
 
+const renderOptions = (options: BaseChoiceItem[] | ConcatChoiceItem[]): ReactNode => {
+  return options.map((option) => (
+    <option key={option.id} value={option.id}>
+      {option.name}
+    </option>
+  ));
+};
+
 const SectionFour:React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -269,14 +277,6 @@ const SectionFour:React.FC = () => {
     setLoading((prevLoading) => !prevLoading);
   }, []);
 
-  const renderOptions = (options: BaseChoiceItem[] | ConcatChoiceItem[]): ReactNode => {
-    return options.map((option) => (
-      <option key={option.id} value={option.id}>
-        {option.name}
-      </option>
-    ));
-  };
-
   type HandleBaseChangeEvent = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void;
   type HandleValueChangeEvent = (value: number | null | string) => void;
   type HandleProductChangeEvent = (e: ChangeEvent<HTMLSelectElement>) => void;
@@ -304,7 +304,7 @@ const SectionFour:React.FC = () => {
       setCategoryChoice(choices.category.filter(item => item.parent === parseInt(value, 10)));
     }
 
-  }, [categoryChoice]);
+  }, [categoryChoice, choices]);
 
   const handleSubmit = () => {
     setFormValues({ ...formValues, product: 1 });
@@ -391,6 +391,10 @@ const SectionFour:React.FC = () => {
     options: BaseChoiceItem[] | ConcatChoiceItem[] | undefined = undefined,
     onchange: HandleBaseChangeEvent | HandleValueChangeEvent | HandleProductChangeEvent = handleTargetChange,
   ) => {
+    const memoizedOptions = useMemo(() => {
+      return options ? renderOptions(options) : null;
+    }, [options]);
+
     return (
       <Col span={span}>
         <RenderFieldFactory fieldKey={fieldKey} rules={rules} errors={errors}>
@@ -411,7 +415,7 @@ const SectionFour:React.FC = () => {
               onChange={onchange as HandleProductChangeEvent}
             >
               <option key={`${fieldKey}_empty`} value={''}>請選擇</option>
-              {renderOptions(options)}
+              {memoizedOptions}
             </select>
           }
           {
